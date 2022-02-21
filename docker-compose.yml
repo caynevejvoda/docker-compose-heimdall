@@ -1,0 +1,33 @@
+version: "3.8"
+
+
+
+services:
+  heimdall:
+    container_name: heimdall
+    image: ghcr.io/linuxserver/heimdall
+    restart: always
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.heimdall.entrypoints=websecure"
+      - "traefik.http.routers.heimdall.rule=Host(`${HEIMDALL_DOMAIN}`)"
+      - "traefik.http.routers.heimdall.tls=true"
+      - "traefik.http.routers.heimdall.tls.certresolver=${TLS_RESOLVER}"
+    volumes:
+      - heimdall:/config
+    networks:
+      - proxy
+
+
+
+volumes:
+  heimdall:
+
+
+networks:
+  proxy:
+    name: traefik_default
